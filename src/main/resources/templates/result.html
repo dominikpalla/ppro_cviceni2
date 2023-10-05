@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Result | Date app</title>
+    <link rel="stylesheet" th:href="@{/css/theme.css}" />
+</head>
+<body>
+<h1>Date app</h1>
+<p>Welcome, <span th:text="${user.name}"></span>!
+    You are <span th:text="${user.age}"></span> years old.
+    You have <span th:text="${user.eyes}"></span> eyes.
+    Your gender is <span th:text="${user.gender}"></span>.
+    <br><br>
+    <span th:text="${user.agree}"></span>
+</p>
+</body>
+</html>
