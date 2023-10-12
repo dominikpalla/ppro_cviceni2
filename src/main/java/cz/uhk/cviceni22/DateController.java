@@ -1,12 +1,13 @@
 package cz.uhk.cviceni22;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,8 +29,21 @@ public class DateController {
     }
 
     @GetMapping("/process")
-    public String processForm(@ModelAttribute("user") User user){
-        return "result";
+    public String processForm(@Valid @ModelAttribute("user") User user, BindingResult br, Model model){
+
+        if(br.hasErrors()){
+            model.addAttribute("eyeColors", eyeColors);
+            model.addAttribute("genders", genders);
+            return "index";
+        }else{
+            return "result";
+        }
+    }
+
+    @InitBinder
+    public void initBinder(WebDataBinder db){
+        StringTrimmerEditor e = new StringTrimmerEditor(true);
+        db.registerCustomEditor(String.class, e);
     }
 
     @ResponseBody

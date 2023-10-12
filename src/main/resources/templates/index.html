@@ -8,8 +8,12 @@
 <body>
 <h1>Date app</h1>
 <form method="GET" th:action="@{/process}" th:object="${user}">
-    Name: <input th:field="*{name}" type="text" name="name" placeholder="Enter your name"><br><br>
-    Age: <input th:field="*{age}" type="number" name="age" placeholder="Enter your age"><br><br>
+    Name: <input th:field="*{name}" type="text" name="name" placeholder="Enter your name">
+    <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color: red;"></span>
+    <br><br>
+    Age: <input th:field="*{age}" type="number" name="age" placeholder="Enter your age">
+    <span th:if="${#fields.hasErrors('age')}" th:errors="*{age}" style="color: red;"></span>
+    <br><br>
     Eyes: <select th:field="*{eyes}">
             <option th:each="color : ${eyeColors}" th:value="${color}" th:text="${color}"></option>
           </select>
@@ -17,6 +21,7 @@
     <input type="radio" th:each="g : ${genders}" th:field="*{gender}" th:value="${g}" th:text="${g}">
     <br><br>
     <input type="checkbox" th:field="*{agree}"> I agree with abuse of my personal data
+    <span th:if="${#fields.hasErrors('agree')}" th:errors="*{agree}" style="color: red;"></span>
     <br><br>
     <input type="submit" value="Submit">
 </form>

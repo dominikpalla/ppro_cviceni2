@@ -1,10 +1,21 @@
 package cz.uhk.cviceni22;
 
+import jakarta.validation.constraints.*;
+import org.springframework.beans.factory.annotation.Value;
+
 public class User {
+
+    @NotNull(message = "Required")
+    @Size(min = 1, message = "Required")
     private String name;
+
+    @Min(value = 10, message = "Minimum is 10")
+    @Max(value = 20, message = "Maximum is 20")
     private int age;
     private String eyes;
-    private String gender;
+    private String gender = "Male";
+
+    @AssertTrue(message = "You have to agree")
     private boolean agree;
 
     public boolean getAgree() {
