@@ -4,9 +4,9 @@ import java.util.List;
 
 public interface UserDAO {
     User getUserById(int id);
+    void saveUser(User user);
+    void updateUser(User user);
+    void deleteUser(int id);
     List<User> getAllUsers();
     List<User> getAllUsersWhereName(String name);
-    void saveUser(User user);
-    void deleteUser(int id);
-    void updateUser(User user);
 }

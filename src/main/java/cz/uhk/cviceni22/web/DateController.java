@@ -18,51 +18,46 @@ public class DateController {
 
     private UserDAO dao;
 
-    @Autowired
-    public DateController(UserDAO dao){
-        this.dao = dao;
-    }
-
     @Value("${eyeColors}")
     private List<String> eyeColors;
 
     @Value("${genders}")
     private List<String> genders;
 
-    @GetMapping("/all")
-    @ResponseBody
-    public String all(){
-        String text = "";
-
-        for(User u : dao.getAllUsers()){
-            text += u.toString() + "<br><br>";
-        }
-
-        return text;
+    @Autowired
+    public DateController(UserDAO dao) {
+        this.dao = dao;
     }
 
     @GetMapping("/user/{id}")
     @ResponseBody
-    public String user(@PathVariable int id){
+    public String userDetail(@PathVariable int id){
+        return dao.getUserById(id).toString();
+    }
 
-        try {
-            User u = dao.getUserById(id);
-            return u.toString();
+    @GetMapping("/delete/{id}")
+    @ResponseBody
+    public String userDelete(@PathVariable int id){
+        try{
+            dao.deleteUser(id);
+            return "User deleted.";
         }catch (Exception e){
-            return "Uživatel neexistuje.";
+            return "User does not exist.";
         }
     }
 
-    @GetMapping("/deluser/{id}")
+    @GetMapping("/")
     @ResponseBody
-    public String deletUser(@PathVariable int id){
+    public String allUsers(){
+        String txt = "";
 
-        try {
-            dao.deleteUser(id);
-            return "Uživatel byl smazán.";
-        }catch (Exception e){
-            return "Uživatel neexistuje.";
+        List<User> users = dao.getAllUsers();
+
+        for(User u : users){
+            txt += u.toString() + "<br><br>";
         }
+
+        return txt;
     }
 
     @GetMapping("/new")
@@ -75,43 +70,36 @@ public class DateController {
 
     @GetMapping("/update/{id}")
     public String updateUser(Model model, @PathVariable int id){
-        User u = dao.getUserById(id);
-        model.addAttribute("user", u);
-        model.addAttribute("eyeColors", eyeColors);
-        model.addAttribute("genders", genders);
-        model.addAttribute("new", 0);
-        return "update";
+        try {
+            User user = dao.getUserById(id);
+            model.addAttribute("user", user);
+            model.addAttribute("eyeColors", eyeColors);
+            model.addAttribute("genders", genders);
+            return "new";
+        }catch (Exception e){
+            return "error";
+        }
     }
 
-    @GetMapping("/processNew")
-    public String processNewForm(@Valid @ModelAttribute("user") User user, BindingResult br, Model model){
-
+    @GetMapping("/process")
+    public String processForm(@Valid @ModelAttribute("user") User user, BindingResult br, Model model){
         if(br.hasErrors()){
             model.addAttribute("eyeColors", eyeColors);
             model.addAttribute("genders", genders);
             return "new";
-        }else{
-            // uložení User objektu
+        }
+
+        if(user.getId() == 0){
+            //new
             dao.saveUser(user);
-            return "result";
-        }
-    }
-
-    @GetMapping("/processUpdate")
-    public String processUpdateForm(@Valid @ModelAttribute("user") User user, BindingResult br, Model model){
-
-        System.out.println(model.getAttribute("new"));
-
-        if(br.hasErrors()){
-            model.addAttribute("eyeColors", eyeColors);
-            model.addAttribute("genders", genders);
-            return "update";
         }else{
-            // uložení User objektu
+            //update
             dao.updateUser(user);
-            return "result";
         }
+
+        return "result";
     }
+
 
     @InitBinder
     public void initBinder(WebDataBinder db){

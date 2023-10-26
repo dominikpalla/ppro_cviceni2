@@ -2,7 +2,6 @@ package cz.uhk.cviceni22.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import org.springframework.beans.factory.annotation.Value;
 
 @Entity
 @Table(name = "user")
@@ -29,8 +28,8 @@ public class User {
     @Column(name = "gender")
     private String gender = "Male";
 
-    @AssertTrue(message = "You have to agree")
     @Column(name = "agree")
+    @AssertTrue(message = "You have to agree")
     private boolean agree;
 
     public int getId() {

@@ -5,7 +5,6 @@ import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 
 @Repository
@@ -14,28 +13,13 @@ public class UserDAOImpl implements UserDAO {
     private EntityManager entityManager;
 
     @Autowired
-    public UserDAOImpl(EntityManager entityManager){
+    public UserDAOImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
     @Override
     public User getUserById(int id) {
         return entityManager.find(User.class, id);
-    }
-
-    @Override
-    public List<User> getAllUsers() {
-        TypedQuery<User> q = entityManager.createQuery("FROM User", User.class);
-        List<User> users = q.getResultList();
-        return users;
-    }
-
-    @Override
-    public List<User> getAllUsersWhereName(String name) {
-        TypedQuery<User> q = entityManager.createQuery("FROM User WHERE name=:name", User.class);
-        q.setParameter("name", name);
-        List<User> users = q.getResultList();
-        return users;
     }
 
     @Override
@@ -46,14 +30,27 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     @Transactional
-    public void deleteUser(int id) {
-        User u = entityManager.find(User.class, id);
-        entityManager.remove(u);
+    public void updateUser(User user) {
+        entityManager.merge(user);
     }
 
     @Override
     @Transactional
-    public void updateUser(User user) {
-        entityManager.merge(user);
+    public void deleteUser(int id) {
+        User user = entityManager.find(User.class, id);
+        entityManager.remove(user);
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        TypedQuery<User> query = entityManager.createQuery("FROM User", User.class);
+        return query.getResultList();
+    }
+
+    @Override
+    public List<User> getAllUsersWhereName(String name) {
+        TypedQuery<User> query = entityManager.createQuery("FROM User WHERE name=:name", User.class);
+        query.setParameter("name", name);
+        return query.getResultList();
     }
 }
