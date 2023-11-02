@@ -53,4 +53,12 @@ public class UserDAOImpl implements UserDAO {
         query.setParameter("name", name);
         return query.getResultList();
     }
+
+    @Override
+    public List<Post> getPostsByUser(int id) {
+        User u = entityManager.find(User.class, id);
+        return u.getPosts();
+    }
+
+
 }

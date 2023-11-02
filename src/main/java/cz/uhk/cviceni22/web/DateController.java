@@ -1,5 +1,6 @@
 package cz.uhk.cviceni22.web;
 
+import cz.uhk.cviceni22.model.Post;
 import cz.uhk.cviceni22.model.User;
 import cz.uhk.cviceni22.model.UserDAO;
 import jakarta.validation.Valid;
@@ -12,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Random;
 
 @Controller
 public class DateController {
@@ -44,6 +46,32 @@ public class DateController {
         }catch (Exception e){
             return "User does not exist.";
         }
+    }
+
+    @GetMapping("/posts")
+    @ResponseBody
+    public String posts(){
+        Random r = new Random();
+
+        User u = dao.getUserById(1);
+
+        Post post = new Post();
+        post.setText("Test " + String.valueOf(r.nextInt()));
+
+        post.setUser(u);
+        u.addPost(post);
+
+        dao.saveUser(u);
+
+        List<Post> posts = dao.getPostsByUser(1);
+
+        String out = "";
+
+        for(Post p : posts){
+            out += p.getText() + "<br>";
+        }
+
+        return out;
     }
 
     @GetMapping("/")

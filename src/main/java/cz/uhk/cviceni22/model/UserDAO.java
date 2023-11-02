@@ -9,4 +9,7 @@ public interface UserDAO {
     void deleteUser(int id);
     List<User> getAllUsers();
     List<User> getAllUsersWhereName(String name);
+
+    List<Post> getPostsByUser(int id);
+
 }

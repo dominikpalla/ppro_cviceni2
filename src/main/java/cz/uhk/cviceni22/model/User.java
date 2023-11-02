@@ -2,6 +2,8 @@ package cz.uhk.cviceni22.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "user")
@@ -31,6 +33,21 @@ public class User {
     @Column(name = "agree")
     @AssertTrue(message = "You have to agree")
     private boolean agree;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private List<Post> posts;
+
+    public void addPost(Post post){
+        if(posts == null)
+            posts = new ArrayList<>();
+
+        post.setUser(this);
+        posts.add(post);
+    }
+
+    public List<Post> getPosts() {
+        return posts;
+    }
 
     public int getId() {
         return id;
@@ -79,6 +96,7 @@ public class User {
     public void setAge(int age) {
         this.age = age;
     }
+
 
     @Override
     public String toString() {
